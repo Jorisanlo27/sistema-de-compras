@@ -1,7 +1,50 @@
 ---
+/** @jsxImportSource astro */
 import { getAll } from '../services/departamentos';
+import type { Departamento } from '../types/api';
 
 const departamentos = await getAll();
+
+if (Astro.request.method === "POST") {
+	try {
+		const data = await Astro.request.formData();
+		// const id = 35; -- ESPECIFICAR EL ID PARA QUE SE EDITE EL REGISTRO
+		const nombre = data.get("nombre_add") as string || data.get("nombre_edit") as string;
+		const estado = (data.get("estado_add")?.toString() == 'true') as boolean || (data.get("estado_edit")?.toString() == 'true') as boolean;
+		
+		if(nombre == "" || nombre == null || estado == null){
+			alert("error");
+			throw {message:"Debe completar el formulario"}
+		}
+
+		try {
+			await fetch("http://localhost:8080/api/v1/departamentos", {
+				method: "POST",
+				// body: JSON.stringify({id, nombre, estado } as Departamento), -- ESTO ES PARA EL EDIT, ENVIANDO EL ID TAMBIEN
+				body: JSON.stringify({nombre, estado } as Departamento),
+				headers: { 'Content-Type': 'application/json' }
+			});
+		} catch (error) {
+			console.log(error);
+		}	
+	} catch (error) {
+		if (error instanceof Error) {
+	  		console.error("El error: ",error.message);
+		}
+	}
+}
+
+// const handelDelete = async(id: any) => {
+// 	try {
+// 		await fetch(`http://localhost:8080/api/v1/departamentos/${id}`, {
+// 			method: "DELETE",
+// 			headers: { 'Content-Type': 'application/json' }
+// 		});
+// 	} catch (error) {
+// 		console.log(error);
+// 	}
+// }
+
 ---
 
 <entities-crud type="products">
@@ -95,6 +138,7 @@ const departamentos = await getAll();
 				<div class="flex items-center ml-auto space-x-2 sm:space-x-3">
 					<button
 						type="button"
+						onclick="location.reload()"
 						data-refresh
 						class="inline-flex items-center justify-center w-1/2 px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
 					>
@@ -140,7 +184,6 @@ const departamentos = await getAll();
 			</div>
 		</div>
 	</div>
-
 	<div class="flex flex-col">
 		<div class="overflow-x-auto">
 			<div class="inline-block min-w-full align-middle">
@@ -167,7 +210,7 @@ const departamentos = await getAll();
 							class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700"
 						>
 							{
-								departamentos.map((departamento) => (
+								departamentos.map((departamento: { id: number; nombre: string; estado: boolean; }) => (
 									<tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
 										<td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
 											<div class="text-base font-semibold text-gray-900 dark:text-white">
@@ -216,7 +259,6 @@ const departamentos = await getAll();
 												Editar
 											</button>
 											<button
-												type="button"
 												id="deleteProductButton"
 												data-drawer-target="drawer-delete-product-default"
 												data-drawer-show="drawer-delete-product-default"
@@ -248,6 +290,8 @@ const departamentos = await getAll();
 			</div>
 		</div>
 	</div>
+
+	<!-- Edit -->
 	<div
 		id="drawer-update-product-default"
 		class="fixed top-0 right-0 z-40 w-full h-screen max-w-xs p-4 overflow-y-auto transition-transform translate-x-full bg-white dark:bg-gray-800"
@@ -281,32 +325,32 @@ const departamentos = await getAll();
 			<span class="sr-only">Close menu</span>
 		</button>
 
-		<form action="#">
+		<form method="POST">
 			<div class="space-y-4">
 				<div>
 					<label
-						for="name"
+						for="nombre_edit"
 						class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
 						>Nombre</label
 					>
 					<input
 						type="text"
-						name="title"
-						id="name"
+						name="nombre_edit"
+						id="nombre_edit"
 						class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
 						value=""
-						placeholder=""
 						required=""
 					/>
 				</div>
 				<div>
 					<label
-						for="category"
+						for="estado_edit"
 						class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
 						>Estado</label
 					>
 					<select
-						id="category"
+						id="estado_edit"
+						name="estado_edit"
 						class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
 					>
 						<option selected disabled>Seleccione...</option>
@@ -328,7 +372,7 @@ const departamentos = await getAll();
 		</form>
 	</div>
 
-	<!-- Delete Product Drawer -->
+	<!-- Delete -->
 	<div
 		id="drawer-delete-product-default"
 		class="fixed top-0 right-0 z-40 w-full h-screen max-w-xs p-4 overflow-y-auto transition-transform translate-x-full bg-white dark:bg-gray-800"
@@ -377,7 +421,7 @@ const departamentos = await getAll();
 			¿Estás seguro de que deseas eliminar este producto?
 		</h3>
 		<a
-			href="#"
+			href="/crud/departamentos"
 			class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-3 py-2.5 text-center mr-2 dark:focus:ring-red-900"
 		>
 			Si, estoy seguro
@@ -392,7 +436,7 @@ const departamentos = await getAll();
 		</a>
 	</div>
 
-	<!-- Add Product Drawer -->
+	<!-- Add -->
 	<div
 		id="drawer-create-product-default"
 		class="fixed top-0 right-0 z-40 w-full h-screen max-w-xs p-4 overflow-y-auto transition-transform translate-x-full bg-white dark:bg-gray-800"
@@ -425,31 +469,31 @@ const departamentos = await getAll();
 			>
 			<span class="sr-only">Close menu</span>
 		</button>
-		<form action="#">
+		<form method="POST" >
 			<div class="space-y-4">
 				<div>
 					<label
-						for="name"
+						for="nombre_add"
 						class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
 						>Nombre</label
 					>
 					<input
 						type="text"
-						name="title"
-						id="name"
+						name="nombre_add"
+						id="nombre_add"
 						class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-						placeholder="Type product name"
 						required=""
 					/>
 				</div>
 				<div>
 					<label
-						for="category-create"
+						for="estado_add"
 						class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
 						>Estado</label
 					>
 					<select
-						id="category-create"
+						id="estado_add"
+						name="estado_add"
 						class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
 					>
 						<option selected disabled>Seleccione...</option>
