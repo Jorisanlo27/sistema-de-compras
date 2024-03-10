@@ -43,7 +43,7 @@
 		"@types/react": "^18.2.64",
 		"@types/react-dom": "^18.2.21",
 		"apexcharts": "^3.37.2",
-		"astro": "^2.0.4",
+		"astro": "^4.4.15",
 		"flowbite": "^2.1.1",
 		"flowbite-typography": "^1.0.3",
 		"react": "^18.2.0",
