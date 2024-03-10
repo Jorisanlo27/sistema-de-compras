@@ -1,7 +1,7 @@
 ---
 import Code from "astro/components/Code.astro";
 import LayoutSidebar from "../../app/LayoutSidebar.astro";
-import { getAll } from "../../services/departamentos";
+import { getAll } from "../services/departamentos";
 
 const departamentos = JSON.stringify(await getAll());
 ---
