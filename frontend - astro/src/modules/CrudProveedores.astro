@@ -1,0 +1,14 @@
+---
+/** @jsxImportSource astro */
+import FormAdd from "../components/crud/proveedores/FormAdd";
+import Header from "../components/crud/Header.astro";
+import Proveedores from "../components/crud/proveedores/Proveedores";
+---
+
+<entities-crud>
+	<Header title="Proveedores" />
+
+	<Proveedores client:only="react" />
+
+	<FormAdd client:only="react" />
+</entities-crud>
