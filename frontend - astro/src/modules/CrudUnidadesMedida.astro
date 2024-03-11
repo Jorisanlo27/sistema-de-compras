@@ -1,0 +1,14 @@
+---
+/** @jsxImportSource astro */
+import UnidadesMedida from "../components/crud/unidadesMedida/UnidadesMedida";
+import FormAdd from "../components/crud/unidadesMedida/FormAdd";
+import Header from "../components/crud/Header.astro";
+---
+
+<entities-crud>
+	<Header title="Unidades De Medida" />
+
+	<UnidadesMedida client:only="react" />
+
+	<FormAdd client:only="react" />
+</entities-crud>
