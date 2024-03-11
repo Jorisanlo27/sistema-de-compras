@@ -3,7 +3,7 @@ import type { Proveedor } from "../../../types/api";
 import FormEdit from "../proveedores/FormEdit";
 
 export default function Proveedores() {
-    const [id, setId] = useState(0);
+    const [id, setId] = useState<any>(0);
     const [proveedores, setProveedores] = useState<Proveedor[]>([]);
 
     useEffect(() => {
@@ -42,7 +42,7 @@ export default function Proveedores() {
                             <table className="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600">
                                 <thead className="bg-gray-100 dark:bg-gray-700">
                                     <tr>
-                                        {["ID", "Nombre Comercial", "Documento", "Estado", "Acciones"].map((th) => (
+                                        {["#", "Nombre Comercial", "Documento", "Estado", "Acciones"].map((th) => (
                                             <th
                                                 scope="col"
                                                 className="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
@@ -54,18 +54,18 @@ export default function Proveedores() {
                                 </thead>
 
                                 <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
-                                    {proveedores.map((proveedor: Proveedor) => (
+                                    {proveedores.map((proveedor: Proveedor, i) => (
                                         <tr className="hover:bg-gray-100 dark:hover:bg-gray-700">
                                             <td className="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
                                                 <div className="text-base font-semibold text-gray-900 dark:text-white">
-                                                    <data value="id">{proveedor.id}</data>
+                                                    <data value="id">{i}</data>
                                                 </div>
                                             </td>
                                             <td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                <data value="nombre">{proveedor.nombreComercial}</data>
+                                                <data value="nombreComercial">{proveedor.nombreComercial}</data>
                                             </td>
                                             <td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                <data value="nombre">{proveedor.documento}</data>
+                                                <data value="documento">{proveedor.documento}</data>
                                             </td>
                                             <td className="p-4 text-base font-normal text-gray-900 whitespace-nowrap dark:text-white">
                                                 <div className="flex items-center">

@@ -3,7 +3,7 @@ import type { Departamento } from "../../../types/api";
 import FormEdit from "../departamentos/FormEdit";
 
 export default function Departamentos() {
-    const [id, setId] = useState(0);
+    const [id, setId] = useState<any>(0);
     const [departamentos, setDepartamentos] = useState<Departamento[]>([]);
 
     useEffect(() => {
@@ -42,7 +42,7 @@ export default function Departamentos() {
                             <table className="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600">
                                 <thead className="bg-gray-100 dark:bg-gray-700">
                                     <tr>
-                                        {["ID", "Nombre", "Estado", "Acciones"].map((th) => (
+                                        {["#", "Nombre", "Estado", "Acciones"].map((th) => (
                                             <th
                                                 scope="col"
                                                 className="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
@@ -54,11 +54,11 @@ export default function Departamentos() {
                                 </thead>
 
                                 <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
-                                    {departamentos.map((departamento: Departamento) => (
+                                    {departamentos.map((departamento: Departamento, i) => (
                                         <tr className="hover:bg-gray-100 dark:hover:bg-gray-700">
                                             <td className="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
                                                 <div className="text-base font-semibold text-gray-900 dark:text-white">
-                                                    <data value="id">{departamento.id}</data>
+                                                    <data value="id">{i}</data>
                                                 </div>
                                             </td>
                                             <td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
