@@ -101,7 +101,7 @@ export default function FormEdit(props: Props) {
               <option value="">
                 --Seleccione--
               </option>
-              {props?.marcas?.map((marca, i) => (
+              {props?.marcas?.filter(marca => marca.estado).map((marca, i) => (
                 <option key={i} value={marca.id}>
                   {marca.nombre}
                 </option>
@@ -125,7 +125,7 @@ export default function FormEdit(props: Props) {
               <option value="">
                 --Seleccione--
               </option>
-              {props?.unidadesMedida?.map((medida, i) => (
+              {props?.unidadesMedida?.filter(unidadesMedida => unidadesMedida.estado).map((medida, i) => (
                 <option key={i} value={medida.id as unknown as string}>
                   {medida.descripcion}
                 </option>
