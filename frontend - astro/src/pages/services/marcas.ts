@@ -1,12 +1,12 @@
 import type { APIRoute } from "astro";
 import type { Marca } from "../../types/api";
 
-export const getAll = async () => {
+export const getMarcas = async () => {
   const res = await fetch(`http://localhost:8080/api/v1/marcas`);
   return (await res.json()) as Marca;
 }
 
-export const getById = async ({ id }: { id: number }) => {
+export const getMarcaById = async ({ id }: { id: number }) => {
   const res = await fetch(`http://localhost:8080/api/v1/marcas/${id}`);
   return (await res.json()) as Marca;
 }

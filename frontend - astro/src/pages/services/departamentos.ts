@@ -1,12 +1,12 @@
 import type { APIRoute } from "astro";
 import type { Departamento } from "../../types/api";
 
-export const getAll = async () => {
+export const getDepartametos = async () => {
   const res = await fetch(`http://localhost:8080/api/v1/departamentos`);
   return (await res.json()) as Departamento;
 }
 
-export const getById = async ({ id }: { id: number }) => {
+export const getDepartamentoById = async ({ id }: { id: number }) => {
   const res = await fetch(`http://localhost:8080/api/v1/departamentos/${id}`);
   return (await res.json()) as Departamento;
 }

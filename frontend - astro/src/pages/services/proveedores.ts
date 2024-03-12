@@ -1,12 +1,12 @@
 import type { APIRoute } from "astro";
 import type { Proveedor } from "../../types/api";
 
-export const getAll = async () => {
+export const getProveedores = async () => {
   const res = await fetch(`http://localhost:8080/api/v1/proveedores`);
   return (await res.json()) as Proveedor;
 }
 
-export const getById = async ({ id }: { id: number }) => {
+export const getProveedorById = async ({ id }: { id: number }) => {
   const res = await fetch(`http://localhost:8080/api/v1/proveedores/${id}`);
   return (await res.json()) as Proveedor;
 }

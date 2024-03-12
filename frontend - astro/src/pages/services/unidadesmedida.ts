@@ -1,12 +1,12 @@
 import type { APIRoute } from "astro";
 import type { UnidadMedida } from "../../types/api";
 
-export const getAll = async () => {
+export const getUnidadesMedida = async () => {
   const res = await fetch(`http://localhost:8080/api/v1/unidadmedida`);
   return (await res.json()) as UnidadMedida;
 }
 
-export const getById = async ({ id }: { id: number }) => {
+export const getUnidadMedidaById = async ({ id }: { id: number }) => {
   const res = await fetch(`http://localhost:8080/api/v1/unidadmedida/${id}`);
   return (await res.json()) as UnidadMedida;
 }
