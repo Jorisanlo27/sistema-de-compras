@@ -1,8 +1,7 @@
 import {
-  useState,
-  type FormEvent,
-  type PropsWithChildren,
   useEffect,
+  useState,
+  type FormEvent
 } from "react";
 import type { Articulo, Marca, UnidadMedida } from "../../../types/api";
 
@@ -12,6 +11,16 @@ interface Props {
   unidadesMedida: UnidadMedida[];
 }
 export default function FormEdit(props: Props) {
+  const [marca, setMarca] = useState<number>(props?.articulo?.marca?.id as number);
+  const [unidadMedida, setUnidadeMedida] = useState<number>(props?.articulo?.unidadMedida?.id as number);
+  const [estado, setEstado] = useState<string>(String(props?.articulo?.estado));
+
+  useEffect(() => {
+    setMarca(props?.articulo?.marca?.id as number)
+    setUnidadeMedida(props?.articulo?.unidadMedida?.id as number)
+    setEstado(String(props?.articulo?.estado))
+  }, [props])
+
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
@@ -92,15 +101,14 @@ export default function FormEdit(props: Props) {
               Marca
             </label>
             <select
-              defaultValue={props?.articulo?.marca?.id}
+              value={marca}
               id="marca_edit"
               name="marca_edit"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
               required
+              onChange={(e) => setMarca(parseInt(e.target.value))}
             >
-              <option value="">
-                --Seleccione--
-              </option>
+              <option value="" disabled>--Seleccione--</option>
               {props?.marcas?.filter(marca => marca.estado).map((marca, i) => (
                 <option key={i} value={marca.id}>
                   {marca.nombre}
@@ -116,17 +124,16 @@ export default function FormEdit(props: Props) {
               Unidad de medida
             </label>
             <select
-              defaultValue={props?.articulo?.unidadMedida?.id as number}
+              value={unidadMedida}
               id="unidadMedida_edit"
               name="unidadMedida_edit"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
               required
+              onChange={(e) => setUnidadeMedida(parseInt(e.target.value))}
             >
-              <option value="">
-                --Seleccione--
-              </option>
+              <option value="" disabled>--Seleccione--</option>
               {props?.unidadesMedida?.filter(unidadesMedida => unidadesMedida.estado).map((medida, i) => (
-                <option key={i} value={medida.id as unknown as string}>
+                <option key={i} value={medida.id as number}>
                   {medida.descripcion}
                 </option>
               ))}
@@ -157,14 +164,13 @@ export default function FormEdit(props: Props) {
             </label>
             <select
               id="estado_edit"
-              defaultValue={String(props?.articulo?.estado)}
+              value={estado}
               name="estado_edit"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
               required
+              onChange={(e) => setEstado(e.target.value)}
             >
-              <option value="">
-                --Seleccione--
-              </option>
+              <option value="" disabled>--Seleccione--</option>
               <option value="true">Activo</option>
               <option value="false">Inactivo</option>
             </select>
