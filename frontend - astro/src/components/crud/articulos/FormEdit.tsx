@@ -108,7 +108,7 @@ export default function FormEdit(props: Props) {
               required
               onChange={(e) => setMarca(parseInt(e.target.value))}
             >
-              <option value="" disabled>--Seleccione--</option>
+              <option value="">--Seleccione--</option>
               {props?.marcas?.filter(marca => marca.estado).map((marca, i) => (
                 <option key={i} value={marca.id}>
                   {marca.nombre}
@@ -131,7 +131,7 @@ export default function FormEdit(props: Props) {
               required
               onChange={(e) => setUnidadeMedida(parseInt(e.target.value))}
             >
-              <option value="" disabled>--Seleccione--</option>
+              <option value="">--Seleccione--</option>
               {props?.unidadesMedida?.filter(unidadesMedida => unidadesMedida.estado).map((medida, i) => (
                 <option key={i} value={medida.id as number}>
                   {medida.descripcion}
