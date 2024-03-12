@@ -7,8 +7,6 @@ import Header from "../components/crud/Header.astro";
 
 <entities-crud>
 	<Header title="Departamentos" />
-
-	<Departamentos client:only="react" />
-
-	<FormAdd client:only="react" />
+	<Departamentos client:load />
+	<FormAdd client:load />
 </entities-crud>

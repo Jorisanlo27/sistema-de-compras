@@ -1,6 +1,6 @@
 export type Departamento = {
 map(arg0: (departamento: { id: number; nombre: string; estado: boolean; }) => any): Departamento;
-    id: number | null;
+    id: number;
     nombre: string;
     estado: boolean;
 }
