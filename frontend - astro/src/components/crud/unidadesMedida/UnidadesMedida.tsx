@@ -42,7 +42,7 @@ export default function UnidadesMedida() {
                             <table className="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600">
                                 <thead className="bg-gray-100 dark:bg-gray-700">
                                     <tr>
-                                        {["ID", "Nombre", "Estado", "Acciones"].map((th, i) => (
+                                        {["#", "Nombre", "Estado", "Acciones"].map((th, i) => (
                                             <th
                                                 key={i}
                                                 scope="col"
