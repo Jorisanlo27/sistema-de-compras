@@ -3,7 +3,7 @@ import type { Marca } from "../../../types/api";
 import FormEdit from "./FormEdit";
 
 export default function Marcas() {
-    const [id, setId] = useState<any>(0);
+    const [marca, setMarca] = useState<Marca>({} as Marca);
     const [marcas, setMarcas] = useState<Marca[]>([]);
 
     useEffect(() => {
@@ -42,8 +42,9 @@ export default function Marcas() {
                             <table className="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600">
                                 <thead className="bg-gray-100 dark:bg-gray-700">
                                     <tr>
-                                        {["#", "Nombre", "Estado", "Acciones"].map((th) => (
+                                        {["#", "Nombre", "Estado", "Acciones"].map((th, i) => (
                                             <th
+                                                key={i}
                                                 scope="col"
                                                 className="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
                                             >
@@ -55,10 +56,10 @@ export default function Marcas() {
 
                                 <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
                                     {marcas.map((marca: Marca, i) => (
-                                        <tr className="hover:bg-gray-100 dark:hover:bg-gray-700">
+                                        <tr key={i} className="hover:bg-gray-100 dark:hover:bg-gray-700">
                                             <td className="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
                                                 <div className="text-base font-semibold text-gray-900 dark:text-white">
-                                                    <data value="id">{i}</data>
+                                                    <data value="id">{i + 1}</data>
                                                 </div>
                                             </td>
                                             <td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -82,13 +83,12 @@ export default function Marcas() {
                                             <td className="p-4 space-x-2 whitespace-nowrap">
                                                 <button
                                                     type="button"
-                                                    id="updateProductButton"
-                                                    data-drawer-target="drawer-update-product-default"
-                                                    data-drawer-show="drawer-update-product-default"
-                                                    aria-controls="drawer-update-product-default"
-                                                    data-drawer-placement="right"
                                                     className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                                                    onClick={() => { setId(marca.id) }}
+                                                    onClick={() => {
+                                                        (document.getElementById("form_edit") as HTMLFormElement).reset();
+                                                        setMarca(marca);
+                                                        (document.getElementById("updateProductButton") as HTMLButtonElement).click();
+                                                    }}
                                                 >
                                                     <svg
                                                         className="w-4 h-4 mr-2"
@@ -140,7 +140,7 @@ export default function Marcas() {
                 </div>
             </div>
 
-            <FormEdit id={id} />
+            <FormEdit marca={marca} />
         </>
     )
 }

@@ -1,14 +1,12 @@
 ---
 /** @jsxImportSource astro */
-import Marcas from "../components/crud/marcas/Marcas";
-import FormAdd from "../components/crud/marcas/FormAdd";
 import Header from "../components/crud/Header.astro";
+import FormAdd from "../components/crud/marcas/FormAdd";
+import Marcas from "../components/crud/marcas/Marcas";
 ---
 
 <entities-crud>
 	<Header title="Marcas" />
-
-	<Marcas client:only="react" />
-
-	<FormAdd client:only="react" />
+	<Marcas client:load />
+	<FormAdd client:load />
 </entities-crud>
