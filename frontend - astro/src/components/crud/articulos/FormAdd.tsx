@@ -97,7 +97,7 @@ export default function FormAdd() {
               required
             >
               <option value="">--Seleccione--</option>
-              {marcas?.map((marca, i) => (
+              {marcas?.filter(marca => marca.estado).map((marca, i) => (
                     <option key={i} value={marca.id}>{marca.nombre}</option>
                   ))}
             </select>
@@ -116,7 +116,7 @@ export default function FormAdd() {
               required
             >
               <option value="">--Seleccione--</option>
-              {unidadesMedida?.map((medida, i) => (
+              {unidadesMedida?.filter(unidadesMedida => unidadesMedida.estado).map((medida, i) => (
                       <option key={i} value={medida.id as unknown as string}>{medida.descripcion}</option>
                     ))}
             </select>

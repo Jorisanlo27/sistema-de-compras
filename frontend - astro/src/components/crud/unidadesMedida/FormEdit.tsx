@@ -1,6 +1,13 @@
-import { type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
+import type { UnidadMedida } from "../../../types/api";
 
-export default function FormEdit(did: { id: number }) {
+export default function FormEdit({ unidadMedida }: { unidadMedida: UnidadMedida }) {
+    const [estado, setEstado] = useState<string>(String(unidadMedida?.estado));
+
+    useEffect(() => {
+        setEstado(String(unidadMedida?.estado))
+    }, [unidadMedida])
+
     async function submit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
         const formData = new FormData(e.target as HTMLFormElement);
@@ -44,7 +51,7 @@ export default function FormEdit(did: { id: number }) {
                 >
                 <span className="sr-only">Close menu</span>
             </button>
-            <form onSubmit={submit}>
+            <form onSubmit={submit} id="form_edit">
                 <div className="space-y-4">
                     <div>
                         <input
@@ -52,7 +59,7 @@ export default function FormEdit(did: { id: number }) {
                             name="id_edit"
                             id="id_edit"
                             className="hidden bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            value={did.id}
+                            defaultValue={unidadMedida?.id}
                             required
                         />
                     </div>
@@ -67,6 +74,7 @@ export default function FormEdit(did: { id: number }) {
                             name="descripcion_edit"
                             id="descripcion_edit"
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            defaultValue={unidadMedida?.descripcion}
                             required
                         />
                     </div>
@@ -78,11 +86,13 @@ export default function FormEdit(did: { id: number }) {
                         </label>
                         <select
                             id="estado_edit"
+                            value={estado}
                             name="estado_edit"
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             required
+                            onChange={(e) => setEstado(e.target.value)}
                         >
-                            <option value="">...</option>
+                            <option value="" disabled>--Seleccione--</option>
                             <option value="true">Activo</option>
                             <option value="false">Inactivo</option>
                         </select>

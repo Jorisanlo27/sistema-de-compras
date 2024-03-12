@@ -6,11 +6,10 @@ export default function Articulos() {
   const [articulos, setArticulos] = useState<Articulo[]>([]);
   const [marcas, setMarcas] = useState<Marca[]>([]);
   const [unidadesMedida, setUnidadesMedida] = useState<UnidadMedida[]>([]);
-  const articulosDropdown = ["articulos", "marcas", "unidadesmedida"];
 
   useEffect(() => {
     (async () => {
-      articulosDropdown.map(async (drop) => {
+      ["articulos", "marcas", "unidadesmedida"].map(async (drop) => {
         const response = await fetch(`/services/${drop}`, {
           headers: {
             "Content-Type": "application/json",
@@ -18,7 +17,7 @@ export default function Articulos() {
         });
         if (drop == "articulos")
           setArticulos((await response.json()) as Articulo[]);
-        if (drop == "marcas") 
+        if (drop == "marcas")
           setMarcas((await response.json()) as Marca[]);
         if (drop == "unidadesmedida")
           setUnidadesMedida((await response.json()) as UnidadMedida[]);
