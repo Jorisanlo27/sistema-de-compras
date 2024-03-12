@@ -1,0 +1,13 @@
+---
+/** @jsxImportSource astro */
+import Articulos from "../components/crud/articulos/Articulos";
+import FormAdd from "../components/crud/articulos/FormAdd";
+import Header from "../components/crud/Header.astro";
+
+---
+
+<entities-crud>
+  <Header title="Artículos" />
+  <Articulos client:load />
+  <FormAdd client:load/>
+</entities-crud>
