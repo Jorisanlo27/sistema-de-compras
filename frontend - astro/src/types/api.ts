@@ -12,7 +12,7 @@ export type Marca = {
 }
 
 export type UnidadMedida = {
-    id: number | null;
+    id: number;
     descripcion: string;
     estado: boolean;
 }
