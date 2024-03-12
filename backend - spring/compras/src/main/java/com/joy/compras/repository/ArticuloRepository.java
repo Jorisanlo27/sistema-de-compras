@@ -10,6 +10,6 @@ import com.joy.compras.entity.Articulo;
 @Repository
 public interface ArticuloRepository extends JpaRepository<Articulo, Long> {
 
-    List<Articulo> findByMarca_Nombre(String marcaNombre);
+    List<Articulo> findByMarca_NombreContaining(String marcaNombre);
 
 }

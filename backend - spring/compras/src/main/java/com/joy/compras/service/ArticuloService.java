@@ -24,7 +24,7 @@ public class ArticuloService {
     }
     
     public List<Articulo> getByMarca(String marca) {
-        return repo.findByMarca_Nombre(marca);
+        return repo.findByMarca_NombreContaining(marca);
     }
 
     public void saveOrUpdate(Articulo articulo) {
