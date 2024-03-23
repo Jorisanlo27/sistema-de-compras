@@ -1,18 +1,14 @@
 import type { APIRoute } from "astro";
+import { API } from "../../app/constants";
 import type { Articulo, Marca, UnidadMedida } from "../../types/api";
 
-export const getAll = async () => {
-  const res = await fetch(`http://localhost:8080/api/v1/articulos`);
-  return (await res.json()) as Articulo;
-};
-
-export const getById = async ({ id }: { id: number }) => {
-  const res = await fetch(`http://localhost:8080/api/v1/articulos/${id}`);
+export const getArticulos = async () => {
+  const res = await fetch(API + "/articulos");
   return (await res.json()) as Articulo;
 };
 
 export const GET: APIRoute = async () => {
-  const response = await fetch("http://localhost:8080/api/v1/articulos", {
+  const response = await fetch(API + "/articulos", {
     headers: {
       "Content-Type": "application/json",
     },
@@ -30,7 +26,7 @@ export const POST: APIRoute = async ({ request }) => {
   const existencia = data.get("existencia_add") as unknown as number;
   const estado = (data.get("estado_add")?.toString() == "true") as boolean;
 
-  await fetch("http://localhost:8080/api/v1/articulos", {
+  await fetch(API + "/articulos", {
     method: "POST",
     body: JSON.stringify({
       descripcion,
@@ -62,7 +58,7 @@ export const PUT: APIRoute = async ({ request }) => {
   const existencia = data.get("existencia_edit") as unknown as number;
   const estado = (data.get("estado_edit")?.toString() == "true") as boolean;
 
-  await fetch("http://localhost:8080/api/v1/articulos", {
+  await fetch(API + "/articulos", {
     method: "POST",
     body: JSON.stringify({
       id,
@@ -85,7 +81,7 @@ export const DELETE: APIRoute = async ({ request }) => {
   const requestObject = await request.json();
   const id = requestObject.id;
 
-  await fetch(`http://localhost:8080/api/v1/articulos/${id}`, {
+  await fetch(API + `/articulos/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
