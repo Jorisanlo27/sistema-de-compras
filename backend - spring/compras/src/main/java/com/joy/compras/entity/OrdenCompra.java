@@ -37,7 +37,7 @@ public class OrdenCompra {
     private Long id;
 
     @Column(nullable = false)
-    private Long numero;
+    private String numero;
 
     @ManyToOne
     private Departamento departamento;
