@@ -2,6 +2,8 @@ package com.joy.compras.entity;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,17 +23,13 @@ public class OrdenesArticulos {
     private Long id;
 
     @ManyToOne
-    private Departamento departamento;
-
-    @ManyToOne
-    private Proveedor proveedor;
-
-    @ManyToOne
     @JoinColumn(name = "orden_compra_id")
+    @JsonIgnoreProperties("articulos")
     private OrdenCompra ordenCompra;
 
     @ManyToOne
     @JoinColumn(name = "articulo_id")
+    @JsonIgnoreProperties("ordenes")
     private Articulo articulo;
 
     @Column(nullable = false)
