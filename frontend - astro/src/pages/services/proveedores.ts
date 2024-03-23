@@ -1,18 +1,14 @@
 import type { APIRoute } from "astro";
+import { API } from "../../app/constants";
 import type { Proveedor } from "../../types/api";
 
 export const getProveedores = async () => {
-  const res = await fetch(`http://localhost:8080/api/v1/proveedores`);
-  return (await res.json()) as Proveedor;
-}
-
-export const getProveedorById = async ({ id }: { id: number }) => {
-  const res = await fetch(`http://localhost:8080/api/v1/proveedores/${id}`);
+  const res = await fetch(API + `/proveedores`);
   return (await res.json()) as Proveedor;
 }
 
 export const GET: APIRoute = async () => {
-  const response = await fetch("http://localhost:8080/api/v1/proveedores", {
+  const response = await fetch(API + "/proveedores", {
     headers: {
       "Content-Type": "application/json"
     }
@@ -26,7 +22,7 @@ export const POST: APIRoute = async ({ request }) => {
   const documento = data.get("documento_add") as any;
   const estado = (data.get("estado_add")?.toString() == 'true') as boolean
 
-  await fetch("http://localhost:8080/api/v1/proveedores", {
+  await fetch(API + "/proveedores", {
     method: "POST",
     body: JSON.stringify({ nombreComercial, documento, estado } as Proveedor),
     headers: { 'Content-Type': 'application/json' }
@@ -47,7 +43,7 @@ export const PUT: APIRoute = async ({ request }) => {
   const documento = data.get("documento_edit") as any;
   const estado = (data.get("estado_edit")?.toString() == 'true') as boolean
 
-  await fetch("http://localhost:8080/api/v1/proveedores", {
+  await fetch(API + "/proveedores", {
     method: "POST",
     body: JSON.stringify({ id, nombreComercial, documento, estado } as Proveedor),
     headers: { 'Content-Type': 'application/json' }
@@ -66,7 +62,7 @@ export const DELETE: APIRoute = async ({ request }) => {
   const requestObject = await request.json();
   const id = requestObject.id;
 
-  await fetch(`http://localhost:8080/api/v1/proveedores/${id}`, {
+  await fetch(API + `/proveedores/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json"

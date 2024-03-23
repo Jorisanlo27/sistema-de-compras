@@ -1,18 +1,14 @@
 import type { APIRoute } from "astro";
+import { API } from "../../app/constants";
 import type { UnidadMedida } from "../../types/api";
 
 export const getUnidadesMedida = async () => {
-  const res = await fetch(`http://localhost:8080/api/v1/unidadmedida`);
-  return (await res.json()) as UnidadMedida;
-}
-
-export const getUnidadMedidaById = async ({ id }: { id: number }) => {
-  const res = await fetch(`http://localhost:8080/api/v1/unidadmedida/${id}`);
+  const res = await fetch(API + `/unidadmedida`);
   return (await res.json()) as UnidadMedida;
 }
 
 export const GET: APIRoute = async () => {
-  const response = await fetch("http://localhost:8080/api/v1/unidadmedida", {
+  const response = await fetch(API + "/unidadmedida", {
     headers: {
       "Content-Type": "application/json"
     }
@@ -25,7 +21,7 @@ export const POST: APIRoute = async ({ request }) => {
   const descripcion = data.get("descripcion_add") as string;
   const estado = (data.get("estado_add")?.toString() == 'true') as boolean
 
-  await fetch("http://localhost:8080/api/v1/unidadmedida", {
+  await fetch(API + "/unidadmedida", {
     method: "POST",
     body: JSON.stringify({ descripcion, estado } as UnidadMedida),
     headers: { 'Content-Type': 'application/json' }
@@ -45,7 +41,7 @@ export const PUT: APIRoute = async ({ request }) => {
   const descripcion = data.get("descripcion_edit") as string;
   const estado = (data.get("estado_edit")?.toString() == 'true') as boolean
 
-  await fetch("http://localhost:8080/api/v1/unidadmedida", {
+  await fetch(API + "/unidadmedida", {
     method: "POST",
     body: JSON.stringify({ id, descripcion, estado } as UnidadMedida),
     headers: { 'Content-Type': 'application/json' }
@@ -64,7 +60,7 @@ export const DELETE: APIRoute = async ({ request }) => {
   const requestObject = await request.json();
   const id = requestObject.id;
 
-  await fetch(`http://localhost:8080/api/v1/unidadmedida/${id}`, {
+  await fetch(API + `/unidadmedida/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json"
