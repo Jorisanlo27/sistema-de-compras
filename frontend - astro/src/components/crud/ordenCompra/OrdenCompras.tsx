@@ -162,8 +162,6 @@ export default function OrdenCompras() {
           </div>
         </div>
       ) : null}
-
-      
     </>
   );
 }

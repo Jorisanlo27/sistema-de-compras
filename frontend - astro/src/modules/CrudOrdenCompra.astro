@@ -1,7 +1,6 @@
 ---
 /** @jsxImportSource astro */
 import OrdenCompra from "../components/crud/ordenCompra/OrdenCompras";
-import FormAdd from "../components/crud/ordenCompra/FormAdd";
 import Header from "../components/crud/Header.astro";
 
 ---
@@ -9,5 +8,4 @@ import Header from "../components/crud/Header.astro";
 <entities-crud>
   <Header title="Orden de Compra" />
   <OrdenCompra client:load />
-  <FormAdd client:load/>
 </entities-crud>
