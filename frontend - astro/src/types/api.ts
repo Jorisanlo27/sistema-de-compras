@@ -1,3 +1,4 @@
+
 export type Departamento = {
 map(arg0: (departamento: { id: number; nombre: string; estado: boolean; }) => any): Departamento;
     id: number;
@@ -31,4 +32,25 @@ export type Proveedor = {
     documento: number;
     nombreComercial: string;
     estado: boolean;
+}
+
+
+
+export interface OrdenCompra {
+    id:           number;
+    numero:       string;
+    departamento: Departamento;
+    proveedor:    Proveedor;
+    estado:       boolean;
+    fecha:        Date;
+    idAsiento:    number | null;
+    articulos:    OrdenesArticulos[];
+}
+
+export interface OrdenesArticulos {
+    id:            number;
+    articulo:      Articulo;
+    cantidad:      number;
+    unidadMedida:  UnidadMedida;
+    costoUnitario: number;
 }
