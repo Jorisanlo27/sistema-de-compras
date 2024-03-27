@@ -1,5 +1,6 @@
 package com.joy.compras.entity;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
@@ -37,6 +38,9 @@ public class OrdenCompra {
     private Long id;
 
     @Column(nullable = false)
+    private String descripcion;
+
+    @Column(nullable = false)
     private String numero;
 
     @ManyToOne
@@ -44,6 +48,8 @@ public class OrdenCompra {
 
     @ManyToOne
     private Proveedor proveedor;
+
+    private BigDecimal monto;
 
     private boolean estado;
 
@@ -55,5 +61,4 @@ public class OrdenCompra {
     @OneToMany(mappedBy = "ordenCompra", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("ordenCompra")
     private Set<OrdenesArticulos> articulos = new HashSet<>();
-
 }
