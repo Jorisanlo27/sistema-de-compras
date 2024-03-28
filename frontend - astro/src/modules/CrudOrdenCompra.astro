@@ -1,0 +1,11 @@
+---
+/** @jsxImportSource astro */
+import OrdenCompra from "../components/crud/ordenCompra/OrdenCompras";
+import Header from "../components/crud/Header.astro";
+
+---
+
+<entities-crud>
+  <Header title="Orden de Compra" />
+  <OrdenCompra client:load />
+</entities-crud>

@@ -5,11 +5,13 @@ import { getDepartametos } from "../services/departamentos";
 import { getMarcas } from "../services/marcas";
 import { getProveedores } from "../services/proveedores";
 import { getUnidadesMedida } from "../services/unidadesmedida";
+import { getOrdenCompras } from "../services/ordencompras";
 
 const departamentos = JSON.stringify(await getDepartametos());
 const proveedores = JSON.stringify(await getProveedores());
 const marcas = JSON.stringify(await getMarcas());
 const unidadesmedida = JSON.stringify(await getUnidadesMedida());
+const ordenesCompra = JSON.stringify(await getOrdenCompras());
 ---
 
 <LayoutSidebar class="bg-slate-800 text-slate-100">
@@ -47,6 +49,12 @@ const unidadesmedida = JSON.stringify(await getUnidadesMedida());
 				Unidades De Medida
 			</h1>
 			<Code code={unidadesmedida} lang="json" />
+		</div>
+		<div class="mb-16">
+			<h1 class="text-6xl font-bold mb-8 dark:text-slate-100">
+				Ordenes De Compras
+			</h1>
+			<Code code={ordenesCompra} lang="json" />
 		</div>
 	</div>
 </LayoutSidebar>
