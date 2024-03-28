@@ -83,7 +83,7 @@ export default function OrdenCompras() {
                         </td>
                         <td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
                           <data value="monto">
-                            {ordenCompra.articulos.reduce((total, articulo) => total + (articulo.costoUnitario * articulo.cantidad), 0)}
+                            {ordenCompra.monto ?? "0"}
                           </data>
                         </td>
                         <td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
