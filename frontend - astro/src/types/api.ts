@@ -39,12 +39,14 @@ export type Proveedor = {
 export interface OrdenCompra {
     id:           number;
     numero:       string;
+    descripcion:  string;
     departamento: Departamento;
     proveedor:    Proveedor;
     estado:       boolean;
     fecha:        Date;
     idAsiento:    number | null;
     articulos:    OrdenesArticulos[];
+    monto: number;
 }
 
 export interface OrdenesArticulos {

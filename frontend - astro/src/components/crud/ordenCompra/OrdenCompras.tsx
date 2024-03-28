@@ -79,7 +79,7 @@ export default function OrdenCompras() {
                           </data>
                         </td>
                         <td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                          <data value="descripcion">Entrada de Mercancia</data>
+                          <data value="descripcion">{ordenCompra.descripcion}</data>
                         </td>
                         <td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
                           <data value="monto">
