@@ -1,6 +1,12 @@
 import type { APIRoute } from "astro";
 import { API } from "../../app/constants";
-import type { OrdenCompra} from "../../types/api";
+import type {
+  Articulo,
+  Departamento,
+  OrdenCompra,
+  OrdenesArticulos,
+  Proveedor,
+} from "../../types/api";
 
 export const getOrdenCompras = async () => {
   const res = await fetch(API + "/ordenesCompra");
@@ -14,4 +20,63 @@ export const GET: APIRoute = async () => {
     },
   });
   return new Response(JSON.stringify(await response.json()));
+};
+
+export const POST: APIRoute = async ({ request }) => {
+  const ordenCompra = (await request.json()) as OrdenCompra;
+
+  console.log("servie",JSON.stringify(ordenCompra));
+
+  await fetch(API + "/ordenesCompra", {
+    method: "POST",
+    body: JSON.stringify(ordenCompra),
+    headers: { "Content-Type": "application/json" },
+  } as RequestInit);
+
+  return new Response(
+    JSON.stringify({
+      message: "Saved!",
+    }),
+    { status: 200 }
+  );
+};
+
+
+export const PUT: APIRoute = async ({ request }) => {
+  const ordenCompra = (await request.json()) as OrdenCompra;
+
+  console.log("servidor put",JSON.stringify(ordenCompra));
+
+  await fetch(API + "/ordenesCompra", {
+    method: "POST",
+    body: JSON.stringify(ordenCompra),
+    headers: { "Content-Type": "application/json" },
+  } as RequestInit);
+
+  return new Response(
+    JSON.stringify({
+      message: "Saved!",
+    }),
+    { status: 201 }
+  );
+};
+
+
+export const DELETE: APIRoute = async ({ request }) => {
+  const requestObject = await request.json();
+  const id = requestObject.id;
+
+  await fetch(API + `/ordenesCompra/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  return new Response(
+    JSON.stringify({
+      message: "Deleted!",
+    }),
+    { status: 200 }
+  );
 };
