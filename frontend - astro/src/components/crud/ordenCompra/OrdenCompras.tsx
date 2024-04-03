@@ -1,11 +1,17 @@
-import { useEffect, useState } from "react";
-import type { OrdenCompra, Departamento, Proveedor } from "../../../types/api";
+import { useContext, useEffect, useState } from "react";
+import type {
+  OrdenCompra,
+  Departamento,
+  Proveedor,
+  OrdenesArticulos,
+} from "../../../types/api";
+import FormEdit from "./FormEdit";
+import { OrdenCompraContext } from "./context/OrdenCompraContext";
 export default function OrdenCompras() {
-  const [ordenCompra, setOrdenCompra] = useState<OrdenCompra>({} as OrdenCompra);
   const [ordenCompras, setOrdenCompras] = useState<OrdenCompra[]>([]);
   const [departamento, setDepartamentos] = useState<Departamento[]>([]);
   const [proveedor, setProveedores] = useState<Proveedor[]>([]);
- 
+
   useEffect(() => {
     (async () => {
       ["ordencompras", "departamentos", "proveedores"].map(async (drop) => {
@@ -13,23 +19,42 @@ export default function OrdenCompras() {
           headers: {
             "Content-Type": "application/json",
           },
-        });        
+        });
         if (drop == "ordencompras")
-        setOrdenCompras((await response.json()) as OrdenCompra[]);
+          setOrdenCompras((await response.json()) as OrdenCompra[]);
         if (drop == "departamentos")
-        setDepartamentos((await response.json()) as Departamento[]);
+          setDepartamentos((await response.json()) as Departamento[]);
         if (drop == "proveedores")
-        setProveedores((await response.json()) as Proveedor[]);
+          setProveedores((await response.json()) as Proveedor[]);
       });
     })();
   }, []);
 
+  const { ordenCompra, setOrdenCompra, setOrdenArticulos } =
+    useContext(OrdenCompraContext);
+
   const handleClickEdit = (ordenCompra: OrdenCompra) => {
     (document.getElementById("form_edit") as HTMLFormElement).reset();
     setOrdenCompra(ordenCompra);
+
+    console.log("hand Click Edit", ordenCompra);
+
+    setOrdenArticulos([...ordenCompra.articulos] as OrdenesArticulos[]);
     (
       document.getElementById("updateProductButton") as HTMLButtonElement
     ).click();
+  };
+
+  const handleDelete = async (id: number | null) => {
+    await fetch("/services/ordencompras", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: id }),
+    });
+
+    location.reload();
   };
 
   return (
@@ -74,20 +99,20 @@ export default function OrdenCompras() {
                           </div>
                         </td>
                         <td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                          <data value="numero">
-                            {ordenCompra.numero}
+                          <data value="numero">{ordenCompra.numero}</data>
+                        </td>
+                        <td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                          <data value="descripcion">
+                            {ordenCompra.descripcion}
                           </data>
                         </td>
                         <td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                          <data value="descripcion">{ordenCompra.descripcion}</data>
+                          <data value="monto">{ordenCompra.monto ?? "0"}</data>
                         </td>
                         <td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                          <data value="monto">
-                            {ordenCompra.monto ?? "0"}
+                          <data value="fecha">
+                            {new Date(ordenCompra.fecha).toLocaleDateString()}
                           </data>
-                        </td>
-                        <td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                          <data value="fecha">{new Date(ordenCompra.fecha).toLocaleDateString()}</data>
                         </td>
                         <td className="p-4 text-base font-normal text-gray-900 whitespace-nowrap dark:text-white">
                           <div className="flex items-center">
@@ -105,13 +130,20 @@ export default function OrdenCompras() {
                           </div>
                         </td>
                         <td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                          <data value="idAsiento">{ordenCompra.idAsiento ?? "NULL" }</data>
+                          <data value="idAsiento">
+                            {ordenCompra.idAsiento ?? "NULL"}
+                          </data>
                         </td>
                         <td className="p-4 space-x-2 whitespace-nowrap">
                           <button
                             type="button"
                             className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                            onClick={() => handleClickEdit(ordenCompra)}
+                            onClick={() =>
+                              handleClickEdit({
+                                ...ordenCompra,
+                                numero: ordenCompra.numero.split("-")[1],
+                              })
+                            }
                           >
                             <svg
                               className="w-4 h-4 mr-2"
@@ -132,6 +164,7 @@ export default function OrdenCompras() {
                           </button>
                           <button
                             id="deleteProductButton"
+                            onClick={() => handleDelete(ordenCompra.id)}
                             data-drawer-target="drawer-delete-product-default"
                             data-drawer-show="drawer-delete-product-default"
                             aria-controls="drawer-delete-product-default"
@@ -161,7 +194,9 @@ export default function OrdenCompras() {
             </div>
           </div>
         </div>
-      ) : null}
+      ) : (
+        <></>
+      )}
     </>
   );
 }
