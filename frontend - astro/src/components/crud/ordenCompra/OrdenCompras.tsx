@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import Datepicker, { type DateValueType } from "react-tailwindcss-datepicker";
 import type {
   OrdenCompra,
   Departamento,
@@ -11,6 +12,10 @@ export default function OrdenCompras() {
   const [ordenCompras, setOrdenCompras] = useState<OrdenCompra[]>([]);
   const [departamento, setDepartamentos] = useState<Departamento[]>([]);
   const [proveedor, setProveedores] = useState<Proveedor[]>([]);
+  const [selectedDateRange, setSelectedDateRange] = useState<{
+    startDate: Date | null;
+    endDate: Date | null;
+  }>({ startDate: null, endDate: null });
 
   useEffect(() => {
     (async () => {
@@ -56,11 +61,32 @@ export default function OrdenCompras() {
 
     location.reload();
   };
+  const filteredOrdenCompras = ordenCompras.filter((ordenCompra) => {
+    if (!selectedDateRange.startDate || !selectedDateRange.endDate) return true;
 
+    const ordenCompraDate = new Date(ordenCompra.fecha);
+    return (
+      ordenCompraDate >= selectedDateRange.startDate &&
+      ordenCompraDate <= selectedDateRange.endDate
+    );
+  });
   return (
     <>
       {ordenCompras ? (
         <div className="flex flex-col">
+          <Datepicker
+            popoverDirection="down"
+            showShortcuts={true} 
+            value={selectedDateRange}
+            onChange={(value: DateValueType) => {
+              if (value) {
+                setSelectedDateRange({
+                  startDate: value.startDate ? new Date(value.startDate) : null,
+                  endDate: value.endDate ? new Date(value.endDate) : null,
+                });
+              }
+            }}
+          />
           <div className="overflow-x-auto">
             <div className="inline-block min-w-full align-middle">
               <div className="overflow-hidden shadow">
@@ -88,7 +114,7 @@ export default function OrdenCompras() {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
-                    {ordenCompras.map((ordenCompra: OrdenCompra, i) => (
+                    {filteredOrdenCompras.map((ordenCompra: OrdenCompra, i) => (
                       <tr
                         className="hover:bg-gray-100 dark:hover:bg-gray-700"
                         key={i}
