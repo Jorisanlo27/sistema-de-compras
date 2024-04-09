@@ -51,6 +51,7 @@ export default function FormEdit() {
       } as Departamento,
       proveedor: { id: ordenCompra.proveedor.id } as Proveedor,
       estado: ordenCompra.estado,
+      monto: ordenCompra.monto,
       fecha: ordenCompra.fecha,
       articulos: ordenArticulos,
     } as OrdenCompra;
