@@ -5,24 +5,26 @@ import type {
   OrdenesArticulos
 } from "../../../types/api";
 import { OrdenCompraContext } from "./context/OrdenCompraContext";
+
 export default function OrdenCompras() {
-  const [ordenCompras, setOrdenCompras] = useState<OrdenCompra[]>([]);
+  const [ordenesCompra, setOrdenCompras] = useState<OrdenCompra[]>([]);
   const [selectedDateRange, setSelectedDateRange] = useState<{
     startDate: DateType;
     endDate: DateType;
   }>({ startDate: null, endDate: null });
+  const [records, setRecords] = useState<OrdenCompra[]>(ordenesCompra);
+  const [currentFilterState, setCurrentFilterState] = useState<{ name?: string, date?: DateValueType }>({});
 
   useEffect(() => {
     (async () => {
-      ["ordencompras", "departamentos", "proveedores"].map(async (drop) => {
-        const response = await fetch(`/services/${drop}`, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        if (drop == "ordencompras")
-          setOrdenCompras((await response.json()) as OrdenCompra[]);
+      const response = await fetch(`/services/ordencompras`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
+      const data = (await response.json()) as OrdenCompra[];
+      setOrdenCompras(data);
+      setRecords(data);
     })();
   }, []);
 
@@ -32,7 +34,6 @@ export default function OrdenCompras() {
   const handleClickEdit = (ordenCompra: OrdenCompra) => {
     (document.getElementById("form_edit") as HTMLFormElement).reset();
     setOrdenCompra(ordenCompra);
-
     setOrdenArticulos([...ordenCompra.articulos] as OrdenesArticulos[]);
     (
       document.getElementById("updateProductButton") as HTMLButtonElement
@@ -51,24 +52,50 @@ export default function OrdenCompras() {
     location.reload();
   };
 
-  const filteredOrdenCompras = ordenCompras.filter((ordenCompra) => {
-    if (!selectedDateRange.startDate || !selectedDateRange.endDate) return true;
+  function handleFilters(value: { name?: string, date?: DateValueType }) {
+    const newFilterState = { ...currentFilterState, ...value };
 
-    const ordenCompraDate = new Date(ordenCompra.fecha);
-    var nuevoAño = ordenCompraDate.getFullYear();
-    var nuevoMes = ordenCompraDate.getMonth() + 1;
-    var nuevoDía = ordenCompraDate.getDate();
-    var ordenCompraFechaFormateada = nuevoAño + '-' + (nuevoMes < 10 ? '0' : '') + nuevoMes + '-' + (nuevoDía < 10 ? '0' : '') + nuevoDía;
+    let filteredOrdenCompras = [...ordenesCompra];
 
-    return (
-      ordenCompraFechaFormateada >= selectedDateRange.startDate &&
-      ordenCompraFechaFormateada <= selectedDateRange.endDate
-    );
-  });
+    if (newFilterState.name) {
+      filteredOrdenCompras = filteredOrdenCompras.filter(ordenCompra => {
+        return ordenCompra.descripcion.toLowerCase().includes(newFilterState.name!.toLowerCase()) ||
+          ordenCompra.numero.toLowerCase().includes(newFilterState.name!.toLowerCase());
+      });
+    }
+
+    if (newFilterState.date && newFilterState.date.startDate && newFilterState.date.endDate) {
+      const startDate = newFilterState.date!.startDate ?? '';
+      const endDate = newFilterState.date!.endDate ?? '';
+
+      if (value) {
+        setSelectedDateRange({
+          startDate: startDate,
+          endDate: endDate,
+        });
+      }
+
+      filteredOrdenCompras = filteredOrdenCompras.filter(ordenCompra => {
+        const ordenCompraDate = new Date(ordenCompra.fecha);
+        const nuevoAño = ordenCompraDate.getFullYear();
+        const nuevoMes = ordenCompraDate.getMonth() + 1;
+        const nuevoDia = ordenCompraDate.getDate();
+        const ordenCompraFechaFormateada = `${nuevoAño}-${(nuevoMes < 10 ? '0' : '')}${nuevoMes}-${(nuevoDia < 10 ? '0' : '')}${nuevoDia}`;
+
+        return (
+          ordenCompraFechaFormateada >= startDate &&
+          ordenCompraFechaFormateada <= endDate
+        );
+      });
+    }
+
+    setRecords(filteredOrdenCompras);
+    setCurrentFilterState(newFilterState);
+  }
 
   return (
     <>
-      {ordenCompras ? (
+      {records ? (
         <div className="flex flex-col">
           <div className="flex justify-evenly py-2">
             <div className="w-80">
@@ -78,25 +105,19 @@ export default function OrdenCompras() {
                 id="products-search"
                 className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 placeholder="Buscar por Nombre"
+                onChange={(e) => handleFilters({ name: e.target.value })}
               />
             </div>
             <div className="w-80">
               <Datepicker
-               inputClassName="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                inputClassName="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 popoverDirection="down"
                 placeholder={"Buscar por fecha"}
                 useRange={false}
                 separator={"a"}
                 showShortcuts={true}
                 value={selectedDateRange}
-                onChange={(value: DateValueType) => {
-                  if (value) {
-                    setSelectedDateRange({
-                      startDate: value.startDate,
-                      endDate: value.endDate,
-                    });
-                  }
-                }}
+                onChange={(value: DateValueType) => handleFilters({ date: value })}
               />
             </div>
           </div>
@@ -127,7 +148,7 @@ export default function OrdenCompras() {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
-                    {filteredOrdenCompras.map((ordenCompra: OrdenCompra, i) => (
+                    {records.map((ordenCompra: OrdenCompra, i) => (
                       <tr
                         className="hover:bg-gray-100 dark:hover:bg-gray-700"
                         key={i}
