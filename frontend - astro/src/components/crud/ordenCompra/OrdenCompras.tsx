@@ -26,7 +26,7 @@ export default function OrdenCompras() {
     })();
   }, []);
 
-  const {setOrdenCompra, setOrdenArticulos } =
+  const { setOrdenCompra, setOrdenArticulos } =
     useContext(OrdenCompraContext);
 
   const handleClickEdit = (ordenCompra: OrdenCompra) => {
@@ -70,23 +70,35 @@ export default function OrdenCompras() {
     <>
       {ordenCompras ? (
         <div className="flex flex-col">
-          <div className="w-2/5">
-            <Datepicker
-              popoverDirection="down"
-              placeholder={"Buscar por fecha"}
-              useRange={false}
-              separator={"a"}
-              showShortcuts={true}
-              value={selectedDateRange}
-              onChange={(value: DateValueType) => {
-                if (value) {
-                  setSelectedDateRange({
-                    startDate: value.startDate,
-                    endDate: value.endDate,
-                  });
-                }
-              }}
-            />
+          <div className="flex justify-evenly py-2">
+            <div className="w-80">
+              <input
+                type="text"
+                name="email"
+                id="products-search"
+                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                placeholder="Buscar por Nombre"
+              />
+            </div>
+            <div className="w-80">
+              <Datepicker
+               inputClassName="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                popoverDirection="down"
+                placeholder={"Buscar por fecha"}
+                useRange={false}
+                separator={"a"}
+                showShortcuts={true}
+                value={selectedDateRange}
+                onChange={(value: DateValueType) => {
+                  if (value) {
+                    setSelectedDateRange({
+                      startDate: value.startDate,
+                      endDate: value.endDate,
+                    });
+                  }
+                }}
+              />
+            </div>
           </div>
           <div className="overflow-x-auto">
             <div className="inline-block min-w-full align-middle">
