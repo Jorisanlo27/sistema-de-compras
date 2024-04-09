@@ -1,16 +1,16 @@
 import { useContext, useEffect, useState } from "react";
+import Datepicker, { type DateType, type DateValueType } from "react-tailwindcss-datepicker";
 import type {
   OrdenCompra,
-  Departamento,
-  Proveedor,
-  OrdenesArticulos,
+  OrdenesArticulos
 } from "../../../types/api";
-import FormEdit from "./FormEdit";
 import { OrdenCompraContext } from "./context/OrdenCompraContext";
 export default function OrdenCompras() {
   const [ordenCompras, setOrdenCompras] = useState<OrdenCompra[]>([]);
-  const [departamento, setDepartamentos] = useState<Departamento[]>([]);
-  const [proveedor, setProveedores] = useState<Proveedor[]>([]);
+  const [selectedDateRange, setSelectedDateRange] = useState<{
+    startDate: DateType;
+    endDate: DateType;
+  }>({ startDate: null, endDate: null });
 
   useEffect(() => {
     (async () => {
@@ -22,22 +22,16 @@ export default function OrdenCompras() {
         });
         if (drop == "ordencompras")
           setOrdenCompras((await response.json()) as OrdenCompra[]);
-        if (drop == "departamentos")
-          setDepartamentos((await response.json()) as Departamento[]);
-        if (drop == "proveedores")
-          setProveedores((await response.json()) as Proveedor[]);
       });
     })();
   }, []);
 
-  const { ordenCompra, setOrdenCompra, setOrdenArticulos } =
+  const {setOrdenCompra, setOrdenArticulos } =
     useContext(OrdenCompraContext);
 
   const handleClickEdit = (ordenCompra: OrdenCompra) => {
     (document.getElementById("form_edit") as HTMLFormElement).reset();
     setOrdenCompra(ordenCompra);
-
-    console.log("hand Click Edit", ordenCompra);
 
     setOrdenArticulos([...ordenCompra.articulos] as OrdenesArticulos[]);
     (
@@ -57,10 +51,43 @@ export default function OrdenCompras() {
     location.reload();
   };
 
+  const filteredOrdenCompras = ordenCompras.filter((ordenCompra) => {
+    if (!selectedDateRange.startDate || !selectedDateRange.endDate) return true;
+
+    const ordenCompraDate = new Date(ordenCompra.fecha);
+    var nuevoAño = ordenCompraDate.getFullYear();
+    var nuevoMes = ordenCompraDate.getMonth() + 1;
+    var nuevoDía = ordenCompraDate.getDate();
+    var ordenCompraFechaFormateada = nuevoAño + '-' + (nuevoMes < 10 ? '0' : '') + nuevoMes + '-' + (nuevoDía < 10 ? '0' : '') + nuevoDía;
+
+    return (
+      ordenCompraFechaFormateada >= selectedDateRange.startDate &&
+      ordenCompraFechaFormateada <= selectedDateRange.endDate
+    );
+  });
+
   return (
     <>
       {ordenCompras ? (
         <div className="flex flex-col">
+          <div className="w-2/5">
+            <Datepicker
+              popoverDirection="down"
+              placeholder={"Buscar por fecha"}
+              useRange={false}
+              separator={"a"}
+              showShortcuts={true}
+              value={selectedDateRange}
+              onChange={(value: DateValueType) => {
+                if (value) {
+                  setSelectedDateRange({
+                    startDate: value.startDate,
+                    endDate: value.endDate,
+                  });
+                }
+              }}
+            />
+          </div>
           <div className="overflow-x-auto">
             <div className="inline-block min-w-full align-middle">
               <div className="overflow-hidden shadow">
@@ -88,7 +115,7 @@ export default function OrdenCompras() {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
-                    {ordenCompras.map((ordenCompra: OrdenCompra, i) => (
+                    {filteredOrdenCompras.map((ordenCompra: OrdenCompra, i) => (
                       <tr
                         className="hover:bg-gray-100 dark:hover:bg-gray-700"
                         key={i}
