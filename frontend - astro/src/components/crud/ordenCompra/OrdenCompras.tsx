@@ -1,17 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import Datepicker, { type DateType, type DateValueType } from "react-tailwindcss-datepicker";
-import type {
-  OrdenCompra,
-  OrdenesArticulos
-} from "../../../types/api";
+import type { OrdenCompra, OrdenesArticulos } from "../../../types/api";
 import { OrdenCompraContext } from "./context/OrdenCompraContext";
 
 export default function OrdenCompras() {
   const [ordenesCompra, setOrdenCompras] = useState<OrdenCompra[]>([]);
-  const [selectedDateRange, setSelectedDateRange] = useState<{
-    startDate: DateType;
-    endDate: DateType;
-  }>({ startDate: null, endDate: null });
+  const [selectedDateRange, setSelectedDateRange] = useState<{ startDate: DateType; endDate: DateType; }>({ startDate: null, endDate: null });
   const [records, setRecords] = useState<OrdenCompra[]>(ordenesCompra);
   const [currentFilterState, setCurrentFilterState] = useState<{ name?: string, date?: DateValueType }>({});
 
@@ -32,57 +26,48 @@ export default function OrdenCompras() {
     useContext(OrdenCompraContext);
 
   async function handleContabilizar() {
-    // ordenesCompra.map(async ordenCompra => {
-      const response = await fetch(`/services/asientosContables`, {
+    await Promise.all(ordenesCompra.map(async ordenCompra => {
+      let response = await fetch(`/services/asientosContables`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          "descripcion": "OC-6 Entrada De Mercancía",
-          "auxiliar": 7,
-          "fecha": formatearFecha(new Date()),
-          "monto": 6342,
-          "estado": 1,
-          "moneda": 1,
-          "transacciones": [
-            {
-              "cuenta": 10,
-              "tipoMovimiento": 1,
-              "monto": 6342
-            },
-            {
-              "cuenta": 9,
-              "tipoMovimiento": 2,
-              "monto": 6342
-            }
-          ]
-        })
-        // body: JSON.stringify(
-        //   {
-        //     "descripcion": ordenCompra.numero + ' ' + ordenCompra.descripcion,
-        //     "auxiliar": 7,
-        //     "fecha": formatearFecha(new Date()),
-        //     "monto": ordenCompra.monto,
-        //     "estado": 1,
-        //     "moneda": 1,
-        //     "transacciones": [
-        //       {
-        //         "cuenta": 18,
-        //         "tipoMovimiento": 1,
-        //         "monto": ordenCompra.monto
-        //       },
-        //       {
-        //         "cuenta": 4,
-        //         "tipoMovimiento": 2,
-        //         "monto": ordenCompra.monto
-        //       }
-        //     ]
-        //   }
-        // )
+        body: JSON.stringify(
+          {
+            "descripcion": ordenCompra.numero + ' ' + ordenCompra.descripcion,
+            "auxiliar": 7,
+            "fecha": formatearFecha(new Date()),
+            "monto": ordenCompra.monto,
+            "estado": 1,
+            "moneda": 1,
+            "transacciones": [
+              {
+                "cuenta": 18,
+                "tipoMovimiento": 1,
+                "monto": ordenCompra.monto
+              },
+              {
+                "cuenta": 4,
+                "tipoMovimiento": 2,
+                "monto": ordenCompra.monto
+              }
+            ]
+          }
+        )
       });
-      console.log(response);
-    // })
+
+      let idAsientoContabilidad = (await response.json()).idAsiento;
+
+      await fetch("/services/ordencompras", {
+        method: "PUT",
+        body: JSON.stringify({ ...ordenCompra, idAsiento: idAsientoContabilidad } as OrdenCompra),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      } as RequestInit);
+    }))
+
+    location.reload();
   };
 
   const handleClickEdit = (ordenCompra: OrdenCompra) => {
