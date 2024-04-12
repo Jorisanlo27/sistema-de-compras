@@ -1,12 +1,6 @@
 import type { APIRoute } from "astro";
 import { API } from "../../app/constants";
-import type {
-  Articulo,
-  Departamento,
-  OrdenCompra,
-  OrdenesArticulos,
-  Proveedor,
-} from "../../types/api";
+import type { OrdenCompra } from "../../types/api";
 
 export const getOrdenCompras = async () => {
   const res = await fetch(API + "/ordenesCompra");
@@ -24,8 +18,6 @@ export const GET: APIRoute = async () => {
 
 export const POST: APIRoute = async ({ request }) => {
   const ordenCompra = (await request.json()) as OrdenCompra;
-
-  console.log("servie",JSON.stringify(ordenCompra));
 
   await fetch(API + "/ordenesCompra", {
     method: "POST",
@@ -45,8 +37,6 @@ export const POST: APIRoute = async ({ request }) => {
 export const PUT: APIRoute = async ({ request }) => {
   const ordenCompra = (await request.json()) as OrdenCompra;
 
-  console.log("servidor put",JSON.stringify(ordenCompra));
-
   await fetch(API + "/ordenesCompra", {
     method: "POST",
     body: JSON.stringify(ordenCompra),
@@ -57,7 +47,7 @@ export const PUT: APIRoute = async ({ request }) => {
     JSON.stringify({
       message: "Saved!",
     }),
-    { status: 201 }
+    { status: 200 }
   );
 };
 

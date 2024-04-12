@@ -1,17 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import Datepicker, { type DateType, type DateValueType } from "react-tailwindcss-datepicker";
-import type {
-  OrdenCompra,
-  OrdenesArticulos
-} from "../../../types/api";
+import type { OrdenCompra, OrdenesArticulos } from "../../../types/api";
 import { OrdenCompraContext } from "./context/OrdenCompraContext";
 
 export default function OrdenCompras() {
   const [ordenesCompra, setOrdenCompras] = useState<OrdenCompra[]>([]);
-  const [selectedDateRange, setSelectedDateRange] = useState<{
-    startDate: DateType;
-    endDate: DateType;
-  }>({ startDate: null, endDate: null });
+  const [selectedDateRange, setSelectedDateRange] = useState<{ startDate: DateType; endDate: DateType; }>({ startDate: null, endDate: null });
   const [records, setRecords] = useState<OrdenCompra[]>(ordenesCompra);
   const [currentFilterState, setCurrentFilterState] = useState<{ name?: string, date?: DateValueType }>({});
 
@@ -30,6 +24,51 @@ export default function OrdenCompras() {
 
   const { setOrdenCompra, setOrdenArticulos } =
     useContext(OrdenCompraContext);
+
+  async function handleContabilizar() {
+    await Promise.all(ordenesCompra.map(async ordenCompra => {
+      let response = await fetch(`/services/asientosContables`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(
+          {
+            "descripcion": ordenCompra.numero + ' ' + ordenCompra.descripcion,
+            "auxiliar": 7,
+            "fecha": formatearFecha(new Date()),
+            "monto": ordenCompra.monto,
+            "estado": 1,
+            "moneda": 1,
+            "transacciones": [
+              {
+                "cuenta": 18,
+                "tipoMovimiento": 1,
+                "monto": ordenCompra.monto
+              },
+              {
+                "cuenta": 4,
+                "tipoMovimiento": 2,
+                "monto": ordenCompra.monto
+              }
+            ]
+          }
+        )
+      });
+
+      let idAsientoContabilidad = (await response.json()).idAsiento;
+
+      await fetch("/services/ordencompras", {
+        method: "PUT",
+        body: JSON.stringify({ ...ordenCompra, idAsiento: idAsientoContabilidad } as OrdenCompra),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      } as RequestInit);
+    }))
+
+    location.reload();
+  };
 
   const handleClickEdit = (ordenCompra: OrdenCompra) => {
     (document.getElementById("form_edit") as HTMLFormElement).reset();
@@ -76,11 +115,7 @@ export default function OrdenCompras() {
       }
 
       filteredOrdenCompras = filteredOrdenCompras.filter(ordenCompra => {
-        const ordenCompraDate = new Date(ordenCompra.fecha);
-        const nuevoAño = ordenCompraDate.getFullYear();
-        const nuevoMes = ordenCompraDate.getMonth() + 1;
-        const nuevoDia = ordenCompraDate.getDate();
-        const ordenCompraFechaFormateada = `${nuevoAño}-${(nuevoMes < 10 ? '0' : '')}${nuevoMes}-${(nuevoDia < 10 ? '0' : '')}${nuevoDia}`;
+        const ordenCompraFechaFormateada = formatearFecha(ordenCompra.fecha);
 
         return (
           ordenCompraFechaFormateada >= startDate &&
@@ -91,6 +126,15 @@ export default function OrdenCompras() {
 
     setRecords(filteredOrdenCompras);
     setCurrentFilterState(newFilterState);
+  }
+
+  function formatearFecha(fecha: Date) {
+    const ordenCompraDate = new Date(fecha);
+    const nuevoAño = ordenCompraDate.getFullYear();
+    const nuevoMes = ordenCompraDate.getMonth() + 1;
+    const nuevoDia = ordenCompraDate.getDate();
+    const ordenCompraFechaFormateada = `${nuevoAño}-${(nuevoMes < 10 ? '0' : '')}${nuevoMes}-${(nuevoDia < 10 ? '0' : '')}${nuevoDia}`;
+    return ordenCompraFechaFormateada
   }
 
   return (
@@ -119,6 +163,29 @@ export default function OrdenCompras() {
                 value={selectedDateRange}
                 onChange={(value: DateValueType) => handleFilters({ date: value })}
               />
+            </div>
+            <div className="w-40 flex justify-center">
+              <button
+                type="button"
+                onClick={() => handleContabilizar()}
+                data-refresh
+                className="inline-flex items-center justify-center w-1/2 px-3 py-2 text-sm font-medium text-center text-dark rounded-lg bg-yellow-300 hover:bg-yellow-100 focus:ring-4 focus:ring-yellow-100 sm:w-auto dark:bg-yellow-300 dark:hover:bg-yellow-100 dark:focus:ring-yellow-300"
+              >
+                <svg
+                  className="w-5 h-5 mr-2 -ml-1"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24">
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M5 19V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v13H7a2 2 0 0 0-2 2Zm0 0a2 2 0 0 0 2 2h12M9 3v14m7 0v4" />
+                </svg>
+                Contabilizar
+              </button>
             </div>
           </div>
           <div className="overflow-x-auto">

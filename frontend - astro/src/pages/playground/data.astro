@@ -5,7 +5,7 @@ import { getDepartametos } from "../services/departamentos";
 import { getMarcas } from "../services/marcas";
 import { getProveedores } from "../services/proveedores";
 import { getUnidadesMedida } from "../services/unidadesmedida";
-import { getOrdenCompras } from "../services/ordencompras";
+import { getOrdenCompras } from "../services/ordenCompras";
 
 const departamentos = JSON.stringify(await getDepartametos());
 const proveedores = JSON.stringify(await getProveedores());
@@ -64,3 +64,4 @@ const ordenesCompra = JSON.stringify(await getOrdenCompras());
 		@apply rounded-3xl p-8;
 	}
 </style>
+../services/ordenCompras

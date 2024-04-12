@@ -34,8 +34,6 @@ export type Proveedor = {
     estado: boolean;
 }
 
-
-
 export interface OrdenCompra {
     id:           number;
     numero:       string;
@@ -55,4 +53,20 @@ export interface OrdenesArticulos {
     cantidad:      number;
     unidadMedida:  UnidadMedida;
     costoUnitario: number;
+}
+
+export interface AsientoContable {
+    descripcion:   string;
+    auxiliar:      number;
+    fecha:         Date;
+    monto:         number;
+    estado:        number;
+    moneda:        number;
+    transacciones: Transaccion[];
+}
+
+export interface Transaccion {
+    cuenta:         number;
+    tipoMovimiento: number;
+    monto:          number;
 }
