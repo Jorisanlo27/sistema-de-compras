@@ -1,18 +1,11 @@
-import { useContext, useState } from "react";
-import type { Articulo, OrdenesArticulos } from "../../../types/api";
-import {
-  initialStateArticulo,
-  initialStateOrdenArticulo,
-} from "./utils/initialStates";
+import { useContext } from "react";
+import type { OrdenesArticulos } from "../../../types/api";
 import { OrdenCompraContext } from "./context/OrdenCompraContext";
+import { initialStateOrdenArticulo } from "./utils/initialStates";
 
-interface Props {
-  setIndexFromItemToBeDeleted?: Function;
-}
-function OrdenArticulosTable({ setIndexFromItemToBeDeleted }: Props) {
+function OrdenArticulosTable() {
   const {
     articulos,
-    ordenArticulo,
     ordenArticulos,
     setOrdenArticulos,
     setOrdenArticulo,
@@ -24,8 +17,6 @@ function OrdenArticulosTable({ setIndexFromItemToBeDeleted }: Props) {
     ordAr: OrdenesArticulos,
     arrayIndex: number
   ) => {
-    //setIsEditMode(true);
-
     const updateIsEditState = new Promise((resolve, reject) => {
       setIsEditOrdenArticuloMode({
         edit: true,

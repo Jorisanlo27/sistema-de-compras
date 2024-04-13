@@ -1,19 +1,11 @@
 import React, { useContext, type FormEvent } from "react";
-import type {
-  Articulo,
-  OrdenCompra,
-  OrdenesArticulos,
-  UnidadMedida,
-} from "../../../types/api";
-import { initialStateOrdenArticulo } from "./utils/initialStates";
-import OrdenCompraProvider from "./context/OrdenCompraProvider";
+import type { OrdenesArticulos } from "../../../types/api";
 import { OrdenCompraContext } from "./context/OrdenCompraContext";
+import { initialStateOrdenArticulo } from "./utils/initialStates";
 
 function FormOrdenArticulos() {
   const {
     unidadMedida,
-    ordenCompra,
-    setOrdenCompra,
     articulos,
     ordenArticulo,
     setOrdenArticulo,
@@ -43,8 +35,6 @@ function FormOrdenArticulos() {
         articulo: ordenArticulo.articulo,
       } as OrdenesArticulos;
 
-      console.log("FormOrd, setOrden Art", modifiedordenArticulo);
-
       const newOrdenArticulos = [...ordenArticulos];
 
       newOrdenArticulos[isEditOrdenArticuloMode.articuloEditIndex] =
@@ -71,8 +61,6 @@ function FormOrdenArticulos() {
     const formElement = e.target;
 
     const isValidNumber = async (inputValue: string) => {
-      console.log(inputValue);
-
       if (inputValue == "" || isNaN(parseInt(inputValue))) {
         return 0;
       } else {
@@ -122,11 +110,7 @@ function FormOrdenArticulos() {
   };
 
   const handleClosingModal = async () => {
-    console.log("ANTES");
-
     await setOrdenArticulo(initialStateOrdenArticulo);
-
-    console.log("despues");
 
     (document.getElementById("orden_articulo_form") as HTMLFormElement).reset();
 

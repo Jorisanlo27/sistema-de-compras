@@ -1,42 +1,18 @@
-import {
-  useState,
-  type FormEvent,
-  useEffect,
-  type MouseEventHandler,
-  type ReactElement,
-  useContext,
-} from "react";
-import type {
-  Articulo,
-  Departamento,
-  Marca,
-  OrdenCompra,
-  OrdenesArticulos,
-  Proveedor,
-  UnidadMedida,
-} from "../../../types/api";
+import { useContext, type FormEvent } from "react";
+import type { Departamento, OrdenCompra, Proveedor } from "../../../types/api";
 import OrdenArticulosTable from "./OrdenArticulosTable";
-import FormOrdenArticulos from "./FormOrdenArticulos";
+import { OrdenCompraContext } from "./context/OrdenCompraContext";
 import {
   initialStateOrdenArticulo,
   initialStateOrdenCompra,
 } from "./utils/initialStates";
-import OrdenCompraProvider from "./context/OrdenCompraProvider";
-import { OrdenCompraContext } from "./context/OrdenCompraContext";
 
 export default function FormAdd() {
   const {
     departamentos,
-    setDepartamentos,
     proveedores,
-    setProveedores,
-    unidadMedida,
-    setUnidadMedida,
     ordenCompra,
     setOrdenCompra,
-    articulos,
-    setArticulos,
-    ordenArticulo,
     setOrdenArticulo,
     ordenArticulos,
     setOrdenArticulos,
@@ -46,7 +22,6 @@ export default function FormAdd() {
 
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    console.log("dentro submit");
 
     const formOrdenCompra = {
       numero: "OC-" + ordenCompra.numero,
@@ -58,8 +33,6 @@ export default function FormAdd() {
       estado: ordenCompra.estado,
       articulos: ordenArticulos,
     } as OrdenCompra;
-
-    console.log("antes f", JSON.stringify(formOrdenCompra));
 
     await fetch("/services/ordencompras", {
       method: "POST",
@@ -134,20 +107,12 @@ export default function FormAdd() {
       };
     }
 
-    //console.log(newOrdenCompra);
-
     setOrdenCompra(newOrdenCompra);
   };
 
   const openOrdenArticuloModal = () => {
-    console.log("dentro openArticuloModal");
-
-    console.log("bool", isEditOrdenArticuloMode.edit);
-
     if (isEditOrdenArticuloMode.edit == true) {
       const artEdit = ordenArticulos[isEditOrdenArticuloMode.articuloEditIndex];
-      console.log("art editttttt", artEdit);
-
       setOrdenArticulo(artEdit);
     }
   };
@@ -169,8 +134,6 @@ export default function FormAdd() {
         tabIndex={-1}
         aria-labelledby="drawer-label"
         aria-hidden="true"
-        //data-modal-backdrop="static"
-        //Revisar como reiniciar los estados , la linea de arriba no funciona aqui
       >
         <h5
           id="drawer-label"

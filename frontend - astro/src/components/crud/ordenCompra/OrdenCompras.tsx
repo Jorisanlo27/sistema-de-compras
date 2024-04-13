@@ -1,13 +1,22 @@
 import { useContext, useEffect, useState } from "react";
-import Datepicker, { type DateType, type DateValueType } from "react-tailwindcss-datepicker";
+import Datepicker, {
+  type DateType,
+  type DateValueType,
+} from "react-tailwindcss-datepicker";
 import type { OrdenCompra, OrdenesArticulos } from "../../../types/api";
 import { OrdenCompraContext } from "./context/OrdenCompraContext";
 
 export default function OrdenCompras() {
   const [ordenesCompra, setOrdenCompras] = useState<OrdenCompra[]>([]);
-  const [selectedDateRange, setSelectedDateRange] = useState<{ startDate: DateType; endDate: DateType; }>({ startDate: null, endDate: null });
+  const [selectedDateRange, setSelectedDateRange] = useState<{
+    startDate: DateType;
+    endDate: DateType;
+  }>({ startDate: null, endDate: null });
   const [records, setRecords] = useState<OrdenCompra[]>(ordenesCompra);
-  const [currentFilterState, setCurrentFilterState] = useState<{ name?: string, date?: DateValueType }>({});
+  const [currentFilterState, setCurrentFilterState] = useState<{
+    name?: string;
+    date?: DateValueType;
+  }>({});
 
   useEffect(() => {
     (async () => {
@@ -22,53 +31,55 @@ export default function OrdenCompras() {
     })();
   }, []);
 
-  const { setOrdenCompra, setOrdenArticulos } =
-    useContext(OrdenCompraContext);
+  const { setOrdenCompra, setOrdenArticulos } = useContext(OrdenCompraContext);
 
   async function handleContabilizar() {
-    await Promise.all(ordenesCompra.map(async ordenCompra => {
-      let response = await fetch(`/services/asientoscontables`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(
-          {
-            "descripcion": ordenCompra.numero + ' ' + ordenCompra.descripcion,
-            "auxiliar": 7,
-            "fecha": formatearFecha(new Date()),
-            "monto": ordenCompra.monto,
-            "estado": 1,
-            "moneda": 1,
-            "transacciones": [
+    await Promise.all(
+      ordenesCompra.map(async (ordenCompra) => {
+        let response = await fetch(`/services/asientoscontables`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            descripcion: ordenCompra.numero + " " + ordenCompra.descripcion,
+            auxiliar: 7,
+            fecha: formatearFecha(new Date()),
+            monto: ordenCompra.monto,
+            estado: 1,
+            moneda: 1,
+            transacciones: [
               {
-                "cuenta": 18,
-                "tipoMovimiento": 1,
-                "monto": ordenCompra.monto
+                cuenta: 18,
+                tipoMovimiento: 1,
+                monto: ordenCompra.monto,
               },
               {
-                "cuenta": 4,
-                "tipoMovimiento": 2,
-                "monto": ordenCompra.monto
-              }
-            ]
-          }
-        )
-      });
+                cuenta: 4,
+                tipoMovimiento: 2,
+                monto: ordenCompra.monto,
+              },
+            ],
+          }),
+        });
 
-      let idAsientoContabilidad = (await response.json()).idAsiento;
+        let idAsientoContabilidad = (await response.json()).idAsiento;
 
-      await fetch("/services/ordencompras", {
-        method: "PUT",
-        body: JSON.stringify({ ...ordenCompra, idAsiento: idAsientoContabilidad } as OrdenCompra),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      } as RequestInit);
-    }))
+        await fetch("/services/ordencompras", {
+          method: "PUT",
+          body: JSON.stringify({
+            ...ordenCompra,
+            idAsiento: idAsientoContabilidad,
+          } as OrdenCompra),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        } as RequestInit);
+      })
+    );
 
     location.reload();
-  };
+  }
 
   const handleClickEdit = (ordenCompra: OrdenCompra) => {
     (document.getElementById("form_edit") as HTMLFormElement).reset();
@@ -91,21 +102,31 @@ export default function OrdenCompras() {
     location.reload();
   };
 
-  function handleFilters(value: { name?: string, date?: DateValueType }) {
+  function handleFilters(value: { name?: string; date?: DateValueType }) {
     const newFilterState = { ...currentFilterState, ...value };
 
     let filteredOrdenCompras = [...ordenesCompra];
 
     if (newFilterState.name) {
-      filteredOrdenCompras = filteredOrdenCompras.filter(ordenCompra => {
-        return ordenCompra.descripcion.toLowerCase().includes(newFilterState.name!.toLowerCase()) ||
-          ordenCompra.numero.toLowerCase().includes(newFilterState.name!.toLowerCase());
+      filteredOrdenCompras = filteredOrdenCompras.filter((ordenCompra) => {
+        return (
+          ordenCompra.descripcion
+            .toLowerCase()
+            .includes(newFilterState.name!.toLowerCase()) ||
+          ordenCompra.numero
+            .toLowerCase()
+            .includes(newFilterState.name!.toLowerCase())
+        );
       });
     }
 
-    if (newFilterState.date && newFilterState.date.startDate && newFilterState.date.endDate) {
-      const startDate = newFilterState.date!.startDate ?? '';
-      const endDate = newFilterState.date!.endDate ?? '';
+    if (
+      newFilterState.date &&
+      newFilterState.date.startDate &&
+      newFilterState.date.endDate
+    ) {
+      const startDate = newFilterState.date!.startDate ?? "";
+      const endDate = newFilterState.date!.endDate ?? "";
 
       if (value) {
         setSelectedDateRange({
@@ -114,7 +135,7 @@ export default function OrdenCompras() {
         });
       }
 
-      filteredOrdenCompras = filteredOrdenCompras.filter(ordenCompra => {
+      filteredOrdenCompras = filteredOrdenCompras.filter((ordenCompra) => {
         const ordenCompraFechaFormateada = formatearFecha(ordenCompra.fecha);
 
         return (
@@ -133,8 +154,10 @@ export default function OrdenCompras() {
     const nuevoAño = ordenCompraDate.getFullYear();
     const nuevoMes = ordenCompraDate.getMonth() + 1;
     const nuevoDia = ordenCompraDate.getDate();
-    const ordenCompraFechaFormateada = `${nuevoAño}-${(nuevoMes < 10 ? '0' : '')}${nuevoMes}-${(nuevoDia < 10 ? '0' : '')}${nuevoDia}`;
-    return ordenCompraFechaFormateada
+    const ordenCompraFechaFormateada = `${nuevoAño}-${
+      nuevoMes < 10 ? "0" : ""
+    }${nuevoMes}-${nuevoDia < 10 ? "0" : ""}${nuevoDia}`;
+    return ordenCompraFechaFormateada;
   }
 
   return (
@@ -161,7 +184,9 @@ export default function OrdenCompras() {
                 separator={"a"}
                 showShortcuts={true}
                 value={selectedDateRange}
-                onChange={(value: DateValueType) => handleFilters({ date: value })}
+                onChange={(value: DateValueType) =>
+                  handleFilters({ date: value })
+                }
               />
             </div>
             <div className="w-40 flex justify-center">
@@ -176,13 +201,15 @@ export default function OrdenCompras() {
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
-                  viewBox="0 0 24 24">
+                  viewBox="0 0 24 24"
+                >
                   <path
                     stroke="currentColor"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth="2"
-                    d="M5 19V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v13H7a2 2 0 0 0-2 2Zm0 0a2 2 0 0 0 2 2h12M9 3v14m7 0v4" />
+                    d="M5 19V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v13H7a2 2 0 0 0-2 2Zm0 0a2 2 0 0 0 2 2h12M9 3v14m7 0v4"
+                  />
                 </svg>
                 Contabilizar
               </button>
