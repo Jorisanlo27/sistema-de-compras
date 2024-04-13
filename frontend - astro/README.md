@@ -1,4 +1,4 @@
-Este modulo sirve para gestionar Departamentos, Artículos, Unidades de Medida, Proveedores y Ordenes de Compra. Recuperandolos mediante consultas por criterios (ej: Ordenes por departamentos y empleados)
+Este sistema sirve para gestionar Departamentos, Artículos, Unidades de Medida, Proveedores y Ordenes de Compra. Recuperandolos mediante consultas por criterios (ej: Ordenes por departamentos y empleados)
 
 This project is a free and open-source UI admin dashboard template built with the components from [Flowbite](https://flowbite.com/) and based on the utility-first [Tailwind CSS](https://tailwindcss.com/) framework featuring charts, tables, widgets, CRUD layouts, modals, drawers, and more.
 
