@@ -1,37 +1,18 @@
-import { useEffect, useState, type FormEvent, useContext } from "react";
-import type {
-  Articulo,
-  Departamento,
-  Marca,
-  OrdenCompra,
-  OrdenesArticulos,
-  Proveedor,
-  UnidadMedida,
-} from "../../../types/api";
+import { useContext, type FormEvent } from "react";
+import type { Departamento, OrdenCompra, Proveedor } from "../../../types/api";
+import OrdenArticulosTable from "./OrdenArticulosTable";
+import { OrdenCompraContext } from "./context/OrdenCompraContext";
 import {
-  initialStateArticulo,
   initialStateOrdenArticulo,
   initialStateOrdenCompra,
 } from "./utils/initialStates";
-import OrdenArticulosTable from "./OrdenArticulosTable";
-import FormOrdenArticulos from "./FormOrdenArticulos";
-import { OrdenCompraContext } from "./context/OrdenCompraContext";
 
 export default function FormEdit() {
-  const [indexFromItemToBeDeleted, setIndexFromItemToBeDeleted] = useState(0);
-
   const {
     departamentos,
-    setDepartamentos,
     proveedores,
-    setProveedores,
-    unidadMedida,
-    setUnidadMedida,
     ordenCompra,
     setOrdenCompra,
-    articulos,
-    setArticulos,
-    ordenArticulo,
     setOrdenArticulo,
     ordenArticulos,
     setOrdenArticulos,
@@ -42,6 +23,10 @@ export default function FormEdit() {
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
+    const monto = ordenArticulos.reduce(
+      (acum, art) => acum + art.cantidad * art.costoUnitario,
+      0
+    );
     const formOrdenCompra = {
       id: ordenCompra.id,
       numero: "OC-" + ordenCompra.numero,
@@ -51,11 +36,10 @@ export default function FormEdit() {
       } as Departamento,
       proveedor: { id: ordenCompra.proveedor.id } as Proveedor,
       estado: ordenCompra.estado,
-      monto: ordenCompra.monto,
       fecha: ordenCompra.fecha,
       articulos: ordenArticulos,
+      monto,
     } as OrdenCompra;
-
     await fetch("/services/ordencompras", {
       method: "PUT",
       body: JSON.stringify(formOrdenCompra),
@@ -128,21 +112,12 @@ export default function FormEdit() {
         estado: formElement.value == "true" ? true : false,
       };
     }
-
-    //console.log(newOrdenCompra);
-
     setOrdenCompra(newOrdenCompra);
   };
 
   const openOrdenArticuloModal = () => {
-    console.log("dentro openArticuloModal");
-
-    console.log("bool", isEditOrdenArticuloMode.edit);
-
     if (isEditOrdenArticuloMode.edit == true) {
       const artEdit = ordenArticulos[isEditOrdenArticuloMode.articuloEditIndex];
-      console.log("art editttttt", artEdit);
-
       setOrdenArticulo(artEdit);
     }
   };
@@ -303,7 +278,6 @@ export default function FormEdit() {
               id="fecha_edit"
               value={new Date(ordenCompra?.fecha).toLocaleDateString()}
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              //onChange={handleOrdenCompras}
               disabled
             />
           </div>
@@ -342,11 +316,7 @@ export default function FormEdit() {
             </button>
           </div>
           {/* Table */}
-          {ordenArticulos.length > 0 && (
-            <OrdenArticulosTable
-              //setIndexFromItemToBeDeleted={setIndexFromItemToBeDeleted}
-            />
-          )}
+          {ordenArticulos.length > 0 && <OrdenArticulosTable />}
           <div className="left-0 flex justify-center w-full pt-7 space-x-4 md:px-4 md:absolute">
             <button
               type="submit"
@@ -356,7 +326,7 @@ export default function FormEdit() {
             </button>
           </div>
         </form>
-      </div>      
+      </div>
     </>
   );
 }
