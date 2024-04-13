@@ -1,17 +1,19 @@
 ---
 import Code from "astro/components/Code.astro";
 import LayoutSidebar from "../../app/LayoutSidebar.astro";
+import { getArticulos } from "../services/articulos";
 import { getDepartametos } from "../services/departamentos";
 import { getMarcas } from "../services/marcas";
+import { getOrdenCompras } from "../services/ordencompras";
 import { getProveedores } from "../services/proveedores";
 import { getUnidadesMedida } from "../services/unidadesmedida";
-import { getOrdenCompras } from "../services/ordenCompras";
 
 const departamentos = JSON.stringify(await getDepartametos());
 const proveedores = JSON.stringify(await getProveedores());
 const marcas = JSON.stringify(await getMarcas());
 const unidadesmedida = JSON.stringify(await getUnidadesMedida());
 const ordenesCompra = JSON.stringify(await getOrdenCompras());
+const articulos = JSON.stringify(await getArticulos());
 ---
 
 <LayoutSidebar class="bg-slate-800 text-slate-100">
@@ -25,8 +27,10 @@ const ordenesCompra = JSON.stringify(await getOrdenCompras());
 			<button
 				type="button"
 				class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-				onclick="location.reload()">Refresh</button
+				onclick="location.reload()"
 			>
+				Refresh
+			</button>
 		</div>
 		<div class="mb-16">
 			<h1 class="text-6xl font-bold mb-8 dark:text-slate-100">
@@ -52,6 +56,12 @@ const ordenesCompra = JSON.stringify(await getOrdenCompras());
 		</div>
 		<div class="mb-16">
 			<h1 class="text-6xl font-bold mb-8 dark:text-slate-100">
+				Articulos
+			</h1>
+			<Code code={articulos} lang="json" />
+		</div>
+		<div class="mb-16">
+			<h1 class="text-6xl font-bold mb-8 dark:text-slate-100">
 				Ordenes De Compras
 			</h1>
 			<Code code={ordenesCompra} lang="json" />
@@ -64,4 +74,3 @@ const ordenesCompra = JSON.stringify(await getOrdenCompras());
 		@apply rounded-3xl p-8;
 	}
 </style>
-../services/ordenCompras

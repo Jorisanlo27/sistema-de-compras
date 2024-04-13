@@ -27,7 +27,7 @@ export default function OrdenCompras() {
 
   async function handleContabilizar() {
     await Promise.all(ordenesCompra.map(async ordenCompra => {
-      let response = await fetch(`/services/asientosContables`, {
+      let response = await fetch(`/services/asientoscontables`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
