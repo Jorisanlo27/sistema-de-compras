@@ -1,4 +1,4 @@
-# Sistema de Compras
+# 🛒 Sistema de Compras
 
 <a class="hidden" href="https://sistema-de-compras.vercel.app/"><img class="w-full" src="https://raw.githubusercontent.com/Jorisanlo27/sistema-de-compras/main/frontend%20-%20astro/src/assets/home-page-capture.png" alt="Flowbite Admin Dashboard Live Preview"></a>
 
@@ -8,7 +8,7 @@ Este proyecto es un ERP (Enterprise Resource Planning) compuesto por 9 módulos 
 
 Este proyecto fue desarrollado como parte del curso final de las asignaturas ISO-810 y ISO-815 (Integración de sistemas).
 
-## Enlaces Directos
+## 🔗 Enlaces Directos
 
 - **Frontend**: Alojado en: https://sistema-de-compras.vercel.app/
 
@@ -101,7 +101,7 @@ Las contribuciones son bienvenidas. Por favor, sigue los pasos a continuación p
     ```
 5. Crear Pull Request.
 
-## Autores
+##  ✒️ Autores
 
 - [**Jorge Santana**](https://www.linkedin.com/in/jorgericardosantanalora/)
 - [**Omar Sanchez**](https://github.com/OmR-SC)
